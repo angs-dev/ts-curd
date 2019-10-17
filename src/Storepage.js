@@ -1,13 +1,17 @@
 import React from 'react';
 import StoreList from './StoreList';
+import { fetchStore } from './actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+
  class Storepage extends React.Component {
+     componentDidMount() {
+         this.props.fetchStore();
+     }
     render() {
         return (
             <div>
-                <h1> store list</h1>
                 <StoreList store={this.props.store}/>
             </div>
         );
@@ -15,7 +19,8 @@ import PropTypes from 'prop-types';
 }
 
 Storepage.propTypes = {
-    store: PropTypes.array.isRequired
+    store: PropTypes.array.isRequired,
+    fetchStore: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state){
@@ -24,4 +29,4 @@ function mapStateToProps(state){
     }
 }
 
-export default connect(mapStateToProps)(Storepage);    
+export default connect(mapStateToProps, { fetchStore })(Storepage);    

@@ -1,0 +1,45 @@
+1.retervie all store details
+    api :http://localhost:8080/stores
+    method: get
+===========================================================================================
+2. Retrieve a single store with storeId
+    api: http://localhost:8080/api/stores/1
+    method: get
+
+==============================================================================================
+3. Update a store with storeId
+    api: http://localhost:8080/api/stores/1
+    method: put
+    body: {
+            "phone": "8-772-453-83-20",
+            "name": "Latzhello",
+            "domain": "Leenti.net",
+            "status": "TRUE",
+            "street": "Cody Park 22",
+            "state": "Utah"
+    }
+===============================================================================================
+4. // Retrieve a all store with customerCount and store Name
+    api: http://localhost:8080/api/store/customerCount
+    method: get
+
+===============================================================================================
+5. // Retrieve a all store with customerDetails
+    api: http://localhost:8080/api/store/customerDetails
+    method: get
+
+================================================================================================
+6.  // Create a new customer under one store
+    api: http://localhost:8080/api/createCustomer/0
+    method: post
+    body: {
+           "firstname": "Ann",
+           "lastname": "Fox",
+           "email": "ut_cumque@Photofeed.org",
+           "phone": "123456789"
+    }
+==================================================================================================
+7.  // search store by name auto suggestion
+    api: http://localhost:8080/api/storeSearch/Di
+    method: get
+

@@ -1,19 +1,30 @@
-var mysql = require("mysql");
+const { Client } = require('pg');
+const connectionString = 'postgres://postgres:root@localhost:5432/t2s';
+const client = new Client({
+    connectionString: connectionString
+});
 
-var pool = mysql.createPool({
-        connectionLimit : 100,
-        host :'remotemysql.com',
-        user : 's9D4yRpQou',
-        password : 'zo5Jh0xXPA'
-    });
 
 exports.getConnection = function(callback) {
-  pool.getConnection(function(err, conn) {
-    if(err) {
-        console.log('connected');
-      return callback(err);
-    }
-    console.log('connected');
-    callback(err, conn);
-  });
+ return client ;
 };
+
+
+// const mysql = require('mysql2');
+
+// const client = mysql.createConnection({
+//   host     : 'localhost',
+//   user     : 'root',
+//   password : 'password',
+//   database : 't2s'
+// });
+ 
+// client.connect();
+
+// client.connect(function(err) {
+//   if (err) {
+//     return console.error('error: ' + err.message);
+//   }
+ 
+//   console.log('Connected to the MySQL server.');
+// });

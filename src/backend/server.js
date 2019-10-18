@@ -1,41 +1,59 @@
 const express = require('express');
-// const { Client } = require('pg');
-// const connectionString = 'postgres://postgres:root@localhost:5432/postgres';
-// const client = new Client({
-//     connectionString: connectionString
-// });
-// client.connect();
-
-const mysql = require('mysql2');
-
-const client = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'password',
-  database : 't2s'
-});
- 
-client.connect();
-
-client.connect(function(err) {
-  if (err) {
-    return console.error('error: ' + err.message);
-  }
- 
-  console.log('Connected to the MySQL server.');
-});
-
-
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const bodyParser= require('body-parser');
+const indexRouter = require('./router');
+const passport = require('passport');
 const app = express();
 
-app.get('/stores', (req, res) => {
-    client.query('SELECT * FROM store', function (err, result) {
-        if (err) {
-            console.log(err); 
-        }
-        res.send(result); 
-    });
+const connect  = require('./db');
+
+const client = connect.getConnection();
+
+client.connect(function(err) {
+    if (err) {
+      return console.error('error: ' + err.message);
+    }
+   
+    console.log('Connected to the MySQL server1111.');
+  });
+
+process.setMaxListeners(0);
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+app.use(bodyParser.json({ limit: '100mb', extended: true }))
+app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }))
+
+// app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PATCH, DELETE, PUT, OPTIONS'
+  );
+  next();
 });
+
+
+
+
+app.use('/api', indexRouter);
 
 app.use((req, res) => {
 
@@ -51,3 +69,4 @@ app.use((req, res) => {
 app.listen(8080, function () {
     console.log('Server is running.. on Port 8080');
 });
+

@@ -21,10 +21,11 @@ const { CreateResponse } = require('../util/responseFormat');
 
   // fetch by store id controller
   
-  const fetchStoreById = function (req, res) {
-    const storeId = req && req.params && req.params.storeId ? req.params.storeId : '';
+  const fetchStore = function (req, res) {
+   
+    const data = req && req.body ? req.body : '';
     storeService
-      .fetchStoreById(storeId)
+      .fetchStore(data)
       .then(response => {
         res.json(CreateResponse(response));
       })
@@ -98,7 +99,8 @@ const { CreateResponse } = require('../util/responseFormat');
    // all store with customer under one store ...storeid is must
 
    const createCustomer = function (req, res) {
-    const storeId = req && req.params && req.params.storeId ? req.params.storeId : '';
+     console.log('angs', req.body);
+    const storeId = req && req.body && req.body && req.body.storeId ? req.body.storeId : '';
     const PostData = req && req.body && req.body ? req.body : '';
     storeService
       .createCustomer(storeId, PostData)
@@ -137,7 +139,7 @@ const { CreateResponse } = require('../util/responseFormat');
 
   module.exports = {
     fetchAllStore,
-    fetchStoreById,
+    fetchStore,
     updateStore,
     fetchStoreCustomerCount,
     fetchStoreBelongCustomerDetails,

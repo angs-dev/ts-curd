@@ -5,19 +5,6 @@ const bodyParser= require('body-parser');
 const indexRouter = require('./router');
 const passport = require('passport');
 const app = express();
-
-const connect  = require('./db');
-
-const client = connect.getConnection();
-
-client.connect(function(err) {
-    if (err) {
-      return console.error('error: ' + err.message);
-    }
-   
-    console.log('Connected to the MySQL server1111.');
-  });
-
 process.setMaxListeners(0);
 
 

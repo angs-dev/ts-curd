@@ -11,33 +11,41 @@ const fetchAllStore = function () {
             if (err) {
                 reject(err); 
             }
-            let getDetails = result.rows.map((obj) => {
-                return { ID: obj.id, Name: obj.name }
-              });
-            resolve(getDetails); 
+            // let getDetails = result.map((obj) => {
+            //     return { ID: obj.ID, Name: obj.Name }
+            //   });
+            resolve(result); 
         });
     });
         
     };
 
 // fetch store by id
-const fetchStoreById = function (storeId) {
+const fetchStore = function (data) {
     return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM store where id = ${storeId}`;
-        client.query(query, function (err, result) {
-            if (err) {
-                reject(err); 
-            }
-            resolve(result.rows); 
-        });
-    });
+        let query = '';
+        if(data.selectValue === 'NAME'){
+           query = `SELECT * FROM store where Name like '%${data.storeId}%'  order by Name limit 5`;
         
+        }else{
+             query = `SELECT * FROM store where ID = ${data.storeId}`;
+        }
+        console.log('@@@@@@@@@@@@@', query);
+            client.query(query, function (err, result) {
+                if (err) {
+                    reject(err); 
+                }
+                resolve(result); 
+            });
+        
+       
+    });  
     };
 // update store using id 
 
 const updateStore = function (storeId, PostData) {
     return new Promise((resolve, reject) => {
-        const query = `update store set name='${PostData.name}' ,domain ='${PostData.domain}', status ='${PostData.status}', street= '${PostData.street}', state='${PostData.state}'  where id = ${storeId}`;
+        const query = `update store set Name='${PostData.Name}' ,Domain ='${PostData.Domain}', status ='${PostData.Status}', Street= '${PostData.Street}', State='${PostData.State}'  where ID = ${storeId}`;
         client.query(query, function (err, result) {
             if (err) {
                 reject(err); 
@@ -51,15 +59,16 @@ const updateStore = function (storeId, PostData) {
 // update store using id 
 
 const fetchStoreCustomerCount = function () {
-    return new Promise((resolve, reject) => {
-        const query = `select store.id ,store.name, count(customer.storeId) as customercount from store
-        join customer on (store.id = customer.storeId)
-        group by store.id,customer.storeId, store.name order by store.id ;`;
+    return new Promise((resolve, reject) => { 
+
+        const query = `select store.ID ,store.Name, count(customer.StoreId) as customercount from store
+        join customer on (store.ID = customer.StoreId)
+        group by store.ID,customer.StoreId, store.Name order by store.ID ;`;
         client.query(query, function (err, result) {
             if (err) {
                 reject(err); 
             }
-            resolve(result.rows); 
+            resolve(result); 
         });
     });
         
@@ -70,14 +79,14 @@ const fetchStoreCustomerCount = function () {
 
 const fetchStoreBelongCustomerDetails = function () {
     return new Promise((resolve, reject) => {
-        const query = `select store.name, customer.firstname,customer.lastname, customer.email  from store
-        join customer on (store.id = customer.storeId) order by store.id;`;
+        const query = `select store.Name, customer.Firstname,customer.Lastname, customer.Email  from store
+        join customer on (store.ID = customer.StoreId) order by store.ID limit 100;`;
         client.query(query, function (err, result) {
             if (err) {
                 reject(err); 
             }
-            const getCustomerDetails = _.mapValues(_.groupBy(result.rows, 'name'));
-            resolve(getCustomerDetails); 
+            //const getCustomerDetails = _.mapValues(_.groupBy(result, 'Name'));
+            resolve(result); 
         });
     });
         
@@ -87,13 +96,13 @@ const fetchStoreBelongCustomerDetails = function () {
 const createCustomer = function (storeId, PostData) {
     return new Promise((resolve, reject) => {
         const query = `INSERT INTO customer(
-             storeid, firstname, lastname, phone, email)
-            VALUES (${storeId}, '${PostData.firstname}', '${PostData.lastname}','${PostData.phone}', '${PostData.email}'); `;
-        client.query(query, function (err, result) {
+             StoreId, Firstname, Lastname, Phone, Email)
+            VALUES (${storeId}, '${PostData.firstName}', '${PostData.lastName}','${PostData.phone}', '${PostData.emailId}'); `;
+            client.query(query, function (err, result) {
             if (err) {
                 reject(err); 
             }
-            resolve(query); 
+            resolve(result); 
         });
     });
         
@@ -103,12 +112,12 @@ const createCustomer = function (storeId, PostData) {
 
 const searchStore = function (searchString) {
     return new Promise((resolve, reject) => {
-        const query = `SELECT id, name FROM store where name like '%${searchString}%' order by name limit 5`;
+        console.log();
         client.query(query, function (err, result) {
             if (err) {
                 reject(err); 
             }
-            resolve(result.rows); 
+            resolve(result); 
         });
     });
         
@@ -116,7 +125,7 @@ const searchStore = function (searchString) {
 
 module.exports = {
         fetchAllStore,
-        fetchStoreById,
+        fetchStore,
         updateStore,
         fetchStoreCustomerCount,
         fetchStoreBelongCustomerDetails,

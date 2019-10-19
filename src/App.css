@@ -6,6 +6,17 @@
   height: 40vmin;
 }
 
+body > .grid {
+  height: 100%;
+}
+.image {
+  margin-top: -100px;
+}
+.column {
+  max-width: 450px;
+  margin-top: 139px;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

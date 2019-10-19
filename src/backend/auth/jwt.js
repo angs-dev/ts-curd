@@ -39,8 +39,7 @@ var getProjects = (name,callback)=>{
         }else
         {
          
-          const user =results.rows;
-            if(user.length === 0)
+            if(results.length === 0)
             {
                 res.send('invalid user');
             }else
@@ -53,14 +52,14 @@ var getProjects = (name,callback)=>{
                     }else
                     {
       
-                        const token = jwt.sign({data: results.rows[0]}, opts.secretOrKey, {
+                        const token = jwt.sign({data: results[0]}, opts.secretOrKey, {
                             expiresIn: '7d' // 1 week
                           });
                   
                           res.json({
                             success: true,
                             token: token,
-                            user: result.rows[0]
+                            user: result[0]
                           });                 
                     }
                 

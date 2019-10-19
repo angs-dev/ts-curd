@@ -1,15 +1,17 @@
 import React from 'react';
-import StoreList from './StoreList';
-import { fetchStore } from './actions';
+import StoreList from '../store/StoreList';
+import { fetchStore } from '../../actions/actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 
  class Storepage extends React.Component {
      componentDidMount() {
-         this.props.fetchStore();
+         //this.props.fetchStore();
      }
+     
     render() {
+        
         return (
             <div>
                 <StoreList store={this.props.store}/>
@@ -24,6 +26,7 @@ Storepage.propTypes = {
 }
 
 function mapStateToProps(state){
+    console.log('@@@@');
     return {
         store: state.store
     }

@@ -9,7 +9,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import {Provider} from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-
+import Root from './components/Root'
 
 const store = createStore(
     rootReducer,
@@ -18,12 +18,7 @@ const store = createStore(
     )
 );
 
-ReactDOM.render(
-    <BrowserRouter>
-        <Provider store={store}>
-             <App />
-        </Provider>
-    </BrowserRouter>,
+ReactDOM.render(<Root store={store} />,
  document.getElementById('root'));
 
 serviceWorker.unregister();

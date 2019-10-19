@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": "password",
+    "database": "t2s",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": true
+  },
+  "test": {
+    "username": "root",
+    "password": "password",
+    "database": "t2s",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": true
+  },
+  "production": {
+    "username": "root",
+    "password": "password",
+    "database": "t2s",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": true
+  }
+}

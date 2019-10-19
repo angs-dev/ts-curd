@@ -48,7 +48,10 @@ var getProjects = (name,callback)=>{
                 client.query("select * from auth where username='"+req.body.username+"' and password='"+pwd+"' limit 1",function (err,result,field){
                     if(err)
                     {
-      
+                        res.json({
+                            success: false,
+                            message: "Invalid user"
+                          }); 
                     }else
                     {
       

@@ -1,15 +1,17 @@
 const connect  = require('../db');
 var _ = require('lodash');
-
 const client = connect.getConnection();
 
 client.connect();
 
+//const store = require('../models').store;
+
 const fetchAllStore = function () {
-    return new Promise((resolve, reject) => {
+     return new Promise((resolve, reject) => {
         client.query('SELECT * FROM store', function (err, result) {
             if (err) {
-                reject(err); 
+                reject(err);
+               
             }
             // let getDetails = result.map((obj) => {
             //     return { ID: obj.ID, Name: obj.Name }

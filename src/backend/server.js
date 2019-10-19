@@ -5,12 +5,19 @@ const bodyParser= require('body-parser');
 const indexRouter = require('./router');
 const passport = require('passport');
 const app = express();
+
+const morgan = require('morgan');
+const logger = require('morgan');
+const winston = require('./config/winston');
+
 process.setMaxListeners(0);
 
 
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(morgan('combined', { stream: winston.stream }));
+app.use(logger('dev'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -18,7 +25,7 @@ app.set('view engine', 'jade');
 app.use(bodyParser.json({ limit: '100mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }))
 
-// app.use(logger('dev'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

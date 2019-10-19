@@ -2,6 +2,7 @@
 
 const storeService = require('../service/storeService');
 const { CreateResponse } = require('../util/responseFormat');
+const winston = require('winston');
 
     const fetchAllStore = function (req, res) {
     storeService
@@ -10,6 +11,8 @@ const { CreateResponse } = require('../util/responseFormat');
         res.json(CreateResponse(response));
       })
       .catch(error => {
+        winston.error(`${error.status || 500} - ${error} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+ 
         res.status(500).send(CreateResponse(null, [
           {
             code: '400',
@@ -23,13 +26,23 @@ const { CreateResponse } = require('../util/responseFormat');
   
   const fetchStore = function (req, res) {
    
-    const data = req && req.body ? req.body : '';
-    storeService
+    const data = req && req.body ? req.body : {};
+    
+    if(Object.entries(data).length === 0 && data.constructor === Object){
+      res.status(404).json({
+        errors: {
+          global: "Please give storeid or name"
+        }
+      });
+    }else{
+      storeService
       .fetchStore(data)
       .then(response => {
         res.json(CreateResponse(response));
       })
       .catch(error => {
+        winston.error(`${error.status || 500} - ${error} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+ 
         res.status(500).send(CreateResponse(null, [
           {
             code: '400',
@@ -37,6 +50,8 @@ const { CreateResponse } = require('../util/responseFormat');
           }
         ]));
       });
+    }
+    
   };
 
   // update store details based on store id
@@ -44,12 +59,21 @@ const { CreateResponse } = require('../util/responseFormat');
   const updateStore = function (req, res) {
     const storeId = req && req.params && req.params.storeId ? req.params.storeId : '';
     const PostData = req && req.body && req.body ? req.body : '';
+    if(Object.entries(data).length === 0 && data.constructor === Object && storeId !== ''){
+      res.status(404).json({
+        errors: {
+          global: "Please give update data and storeid"
+        }
+      });
+    }else{
     storeService
       .updateStore(storeId, PostData)
       .then(response => {
         res.json(CreateResponse(response));
       })
       .catch(error => {
+        winston.error(`${error.status || 500} - ${error} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+ 
         res.status(500).send(CreateResponse(null, [
           {
             code: '400',
@@ -57,6 +81,7 @@ const { CreateResponse } = require('../util/responseFormat');
           }
         ]));
       });
+    }
   };
 
   // all store with customerCount and store Name
@@ -68,6 +93,8 @@ const { CreateResponse } = require('../util/responseFormat');
         res.json(CreateResponse(response));
       })
       .catch(error => {
+        winston.error(`${error.status || 500} - ${error} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+ 
         res.status(500).send(CreateResponse(null, [
           {
             code: '400',
@@ -87,6 +114,8 @@ const { CreateResponse } = require('../util/responseFormat');
         res.json(CreateResponse(response));
       })
       .catch(error => {
+        winston.error(`${error.status || 500} - ${error} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+ 
         res.status(500).send(CreateResponse(null, [
           {
             code: '400',
@@ -99,15 +128,23 @@ const { CreateResponse } = require('../util/responseFormat');
    // all store with customer under one store ...storeid is must
 
    const createCustomer = function (req, res) {
-     console.log('angs', req.body);
     const storeId = req && req.body && req.body && req.body.storeId ? req.body.storeId : '';
     const PostData = req && req.body && req.body ? req.body : '';
+    if(Object.entries(data).length === 0 && data.constructor === Object && storeId !== ''){
+      res.status(404).json({
+        errors: {
+          global: "Please give create data and storeid"
+        }
+      });
+    }else{
     storeService
       .createCustomer(storeId, PostData)
       .then(response => {
         res.json(CreateResponse(response));
       })
       .catch(error => {
+        winston.error(`${error.status || 500} - ${error} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+ 
         res.status(500).send(CreateResponse(null, [
           {
             code: '400',
@@ -115,6 +152,7 @@ const { CreateResponse } = require('../util/responseFormat');
           }
         ]));
       });
+    }
   };
 
   // search store my name auto suggestions
@@ -127,6 +165,7 @@ const { CreateResponse } = require('../util/responseFormat');
         res.json(CreateResponse(response));
       })
       .catch(error => {
+        winston.error(`${error.status || 500} - ${error} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
         res.status(500).send(CreateResponse(null, [
           {
             code: '400',

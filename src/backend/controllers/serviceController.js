@@ -59,7 +59,7 @@ const winston = require('winston');
   const updateStore = function (req, res) {
     const storeId = req && req.params && req.params.storeId ? req.params.storeId : '';
     const PostData = req && req.body && req.body ? req.body : '';
-    if(Object.entries(data).length === 0 && data.constructor === Object && storeId !== ''){
+    if(Object.entries(PostData).length === 0 && PostData.constructor === Object && storeId !== ''){
       res.status(404).json({
         errors: {
           global: "Please give update data and storeid"
@@ -130,7 +130,7 @@ const winston = require('winston');
    const createCustomer = function (req, res) {
     const storeId = req && req.body && req.body && req.body.storeId ? req.body.storeId : '';
     const PostData = req && req.body && req.body ? req.body : '';
-    if(Object.entries(data).length === 0 && data.constructor === Object && storeId !== ''){
+    if(Object.entries(PostData).length === 0 && PostData.constructor === Object && storeId !== ''){
       res.status(404).json({
         errors: {
           global: "Please give create data and storeid"

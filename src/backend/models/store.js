@@ -8,12 +8,15 @@ module.exports = (sequelize, DataTypes) => {
     Status: DataTypes.STRING,
     Street: DataTypes.STRING,
     State: DataTypes.STRING
-  }, {});
+  }, {
+    freezeTableName: true,
+    timestamps: false
+  });
   store.associate = function(models) {
     // associations can be defined here
     store.hasMany(models.customer, {
       foreginKey :'StoreId',
-      as: 'customer'
+      as: 'storeData'
     })
   };
   return store;

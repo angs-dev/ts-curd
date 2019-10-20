@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     Lastname: DataTypes.STRING,
     Phone: DataTypes.STRING,
     Email: DataTypes.STRING
-  }, {});
+  }, {
+    freezeTableName: true,
+    timestamps: false
+  });
   customer.associate = function(models) {
     // associations can be defined here
     customer.belongsTo(models.store, {

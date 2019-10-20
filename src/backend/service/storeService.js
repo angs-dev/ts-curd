@@ -1,23 +1,20 @@
-const connect  = require('../db');
-var _ = require('lodash');
-const client = connect.getConnection();
 
-client.connect();
-
-//const store = require('../models').store;
+const store = require('../models').store;
+const customer = require('../models').customer;
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const fetchAllStore = function () {
      return new Promise((resolve, reject) => {
-        client.query('SELECT * FROM store', function (err, result) {
-            if (err) {
-                reject(err);
-               
-            }
+        store.findAll().then((res)=>{
             // let getDetails = result.map((obj) => {
             //     return { ID: obj.ID, Name: obj.Name }
             //   });
-            resolve(result); 
+            resolve(res); 
+        }).catch((err) => {
+            reject(err);
         });
+       
     });
         
     };
@@ -27,33 +24,53 @@ const fetchStore = function (data) {
     return new Promise((resolve, reject) => {
         let query = '';
         if(data.selectValue === 'NAME'){
-           query = `SELECT * FROM store where Name like '%${data.storeId}%'  order by Name limit 5`;
+           query = {
+               Name : {
+                   [Op.like] : `%${data.storeId}%`
+               }
+           }
         
         }else{
-             query = `SELECT * FROM store where ID = ${data.storeId}`;
+             query = {
+                ID :  data.storeId 
+             };
         }
-        console.log('@@@@@@@@@@@@@', query);
-            client.query(query, function (err, result) {
-                if (err) {
-                    reject(err); 
-                }
-                resolve(result); 
-            });
-        
-       
+
+            store.findOne({
+                where : query
+            }).then((res)=>{
+                resolve([res]); 
+            }).catch((err) => {
+                reject(err);
+            });   
+
+
     });  
     };
 // update store using id 
 
 const updateStore = function (storeId, PostData) {
     return new Promise((resolve, reject) => {
-        const query = `update store set Name='${PostData.Name}' ,Domain ='${PostData.Domain}', status ='${PostData.Status}', Street= '${PostData.Street}', State='${PostData.State}'  where ID = ${storeId}`;
-        client.query(query, function (err, result) {
-            if (err) {
-                reject(err); 
-            }
-            resolve(result); 
-        });
+      
+        store.update(
+                {
+                    Name : PostData.Name,
+                    Domain: PostData.Domain,
+                    Status: PostData.Status,
+                    Street: PostData.Street,
+                    State: PostData.State
+                },
+                {
+                    where: {
+                        ID :  storeId
+                    }
+                }).then((result) => {
+                    resolve([result]); 
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+       
     });
         
     };
@@ -62,15 +79,18 @@ const updateStore = function (storeId, PostData) {
 
 const fetchStoreCustomerCount = function () {
     return new Promise((resolve, reject) => { 
-
-        const query = `select store.ID ,store.Name, count(customer.StoreId) as customercount from store
-        join customer on (store.ID = customer.StoreId)
-        group by store.ID,customer.StoreId, store.Name order by store.ID ;`;
-        client.query(query, function (err, result) {
-            if (err) {
-                reject(err); 
-            }
-            resolve(result); 
+        store.findAll({
+            attributes: { 
+                include: [[Sequelize.fn("COUNT", Sequelize.col("storeData.StoreId")), "customercount"]] 
+            },
+            include: [{
+                model: customer, attributes: [],as: 'storeData',
+            }],
+            group: ['storeData.StoreId','store.ID']
+        }).then((result)=>{
+            resolve(result);
+        }).catch((err) => {
+            reject(err); 
         });
     });
         
@@ -81,14 +101,27 @@ const fetchStoreCustomerCount = function () {
 
 const fetchStoreBelongCustomerDetails = function () {
     return new Promise((resolve, reject) => {
-        const query = `select store.Name, customer.Firstname,customer.Lastname, customer.Email  from store
-        join customer on (store.ID = customer.StoreId) order by store.ID limit 100;`;
-        client.query(query, function (err, result) {
-            if (err) {
-                reject(err); 
-            }
-            //const getCustomerDetails = _.mapValues(_.groupBy(result, 'Name'));
-            resolve(result); 
+
+        store.findAll({
+            attributes: [
+                ["Name", "Name"],
+            ],
+            include: [{
+                attributes: [
+                ["Firstname","FirstName"],
+                ["Lastname", "Lastname"],
+                ["Email", "Email"]
+                ],
+                model: customer,
+                as: 'storeData',
+                
+            }],
+            limit: 100,
+            subQuery:false
+        }).then((result)=>{
+            resolve(result);
+        }).catch((err) => {
+            reject(err); 
         });
     });
         
@@ -96,31 +129,21 @@ const fetchStoreBelongCustomerDetails = function () {
 
 // create a new customer under store
 const createCustomer = function (storeId, PostData) {
-    return new Promise((resolve, reject) => {
-        const query = `INSERT INTO customer(
-             StoreId, Firstname, Lastname, Phone, Email)
-            VALUES (${storeId}, '${PostData.firstName}', '${PostData.lastName}','${PostData.phone}', '${PostData.emailId}'); `;
-            client.query(query, function (err, result) {
-            if (err) {
-                reject(err); 
-            }
-            resolve(result); 
-        });
-    });
-        
-    };
-
-    // search store my name like auto suggestion return top 5 records;
-
-const searchStore = function (searchString) {
-    return new Promise((resolve, reject) => {
-        console.log();
-        client.query(query, function (err, result) {
-            if (err) {
-                reject(err); 
-            }
-            resolve(result); 
-        });
+    return new Promise((resolve, reject) => {  
+            customer.create(
+                {
+                    StoreId : storeId,
+                    Firstname: PostData.firstName,
+                    Lastname: PostData.lastName,
+                    Phone: PostData.phone,
+                    Email: PostData.emailId
+                }).then((result) => {
+                    resolve([result]); 
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+       
     });
         
     };
@@ -131,6 +154,5 @@ module.exports = {
         updateStore,
         fetchStoreCustomerCount,
         fetchStoreBelongCustomerDetails,
-        createCustomer,
-        searchStore
+        createCustomer
     }

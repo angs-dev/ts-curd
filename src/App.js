@@ -15,11 +15,12 @@ import PropTypes from 'prop-types';
 class App extends React.Component {
    
     render() {
+      console.log(localStorage.getItem('jwtToken'));
           return (
             <div>
           
-          {
-            this.props.auth.isAuthenticated ?
+          { 
+            localStorage.getItem('jwtToken') ?
           <div className="ui container">
                   <div className="ui six item menu">
                     <Link className="item" to="/stores">Home</Link>

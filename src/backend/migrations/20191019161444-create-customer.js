@@ -2,17 +2,14 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('customers', {
-      id: {
+      Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      Id: {
-        type: Sequelize.NUMBER
-      },
       StoreId: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER
       },
       Firstname: {
         type: Sequelize.STRING

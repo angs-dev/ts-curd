@@ -4,8 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
-    "start": "nodemon --exec babel-node -- ./server.js"
+    "start": "nodemon --exec babel-node -- ./server.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npm run migrate",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
+    "pretest": "cross-env NODE_ENV=test npm run migrate:reset"
   },
   "keywords": [],
   "author": "",
@@ -32,6 +35,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
+    "cross-env": "^6.0.3",
     "jest": "^24.9.0",
     "nodemon": "^1.19.4",
     "supertest": "^4.0.2"
